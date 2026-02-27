@@ -75,17 +75,17 @@ export default function Reportes() {
   };
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--text)] p-4 sm:p-6">
+    <div className="min-h-screen bg-[#F7F2E8] text-[#2B1B12] p-6">
       {/* TOAST */}
       {toast && (
         <div className="fixed top-5 left-1/2 -translate-x-1/2 z-50">
           <div
             className={[
               "px-5 py-3 rounded-2xl shadow-xl border backdrop-blur",
-              "bg-[var(--card)] border-[var(--accent)]/25",
-              toast.type === "success" ? "text-[var(--success)]" : "",
-              toast.type === "error" ? "text-[var(--danger)]" : "",
-              toast.type === "info" ? "text-[var(--accent)]" : "",
+              "bg-white/85 border-black/10",
+              toast.type === "success" ? "text-[#2F6B4F]" : "",
+              toast.type === "error" ? "text-[#7A2E2E]" : "",
+              toast.type === "info" ? "text-[#6B5B52]" : "",
             ].join(" ")}
           >
             <span className="font-semibold">{toast.msg}</span>
@@ -94,32 +94,28 @@ export default function Reportes() {
       )}
 
       {/* HEADER */}
-      <div className="card-theme rounded-3xl shadow-xl p-5 sm:p-6">
+      <div className="rounded-3xl bg-white/70 backdrop-blur border border-black/5 shadow-sm p-6">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
+            {/* ✅ Volver a Bienvenida */}
             <button
               onClick={() => navigate("/")}
-              className="mb-3 inline-flex items-center gap-2 px-4 py-2 rounded-2xl
-                         bg-white/10 hover:bg-white/15 border border-white/10 text-sm font-semibold"
+              className="mb-3 inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-black/5 hover:bg-black/10 text-sm font-semibold"
             >
               ← Volver a Bienvenida
             </button>
 
-            <div className="chip-accent inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-extrabold">
+            <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
               📊 Reportes
-            </div>
-
-            <h1 className="mt-3 text-2xl md:text-3xl font-extrabold tracking-tight text-[var(--textDark)]">
-              Panel de reportes (Excel)
             </h1>
-            <p className="text-[var(--muted)] mt-1">
-              Descarga reportes sin necesidad de abrir jornada.
+            <p className="text-[#6B5B52] mt-1">
+              Descarga reportes en Excel sin necesidad de abrir jornada.
             </p>
           </div>
 
-          <div className="px-5 py-3 rounded-2xl bg-[var(--accent)]/15 border border-[var(--accent)]/35">
-            <div className="text-xs text-[var(--muted)]">Seleccionado</div>
-            <div className="text-lg font-extrabold text-[var(--textDark)]">{titulo}</div>
+          <div className="px-5 py-3 rounded-2xl bg-[#B08D57]/10 border border-[#B08D57]/20">
+            <div className="text-xs text-[#6B5B52]">Seleccionado</div>
+            <div className="text-lg font-extrabold">{titulo}</div>
           </div>
         </div>
       </div>
@@ -127,7 +123,7 @@ export default function Reportes() {
       {/* CONTENIDO */}
       <div className="mt-6 grid grid-cols-1 xl:grid-cols-3 gap-6">
         {/* CONFIG */}
-        <div className="card-theme rounded-3xl shadow-xl p-5 sm:p-6 xl:col-span-2">
+        <div className="rounded-3xl bg-white/70 backdrop-blur border border-black/5 shadow-sm p-6 xl:col-span-2">
           <div className="flex gap-2 flex-wrap">
             <Tab label="📅 Diario" active={tipo === "DIARIO"} onClick={() => setTipo("DIARIO")} />
             <Tab label="🗓️ Mensual" active={tipo === "MENSUAL"} onClick={() => setTipo("MENSUAL")} />
@@ -142,17 +138,14 @@ export default function Reportes() {
                     type="date"
                     value={fecha}
                     onChange={(e) => setFecha(e.target.value)}
-                    className="w-full px-4 py-3 rounded-2xl border border-white/10 bg-white/10
-                               text-[var(--textDark)] outline-none
-                               focus:ring-2 focus:ring-[var(--accent)]/40"
+                    className="w-full px-4 py-3 rounded-2xl border border-black/10 bg-white/80 outline-none focus:ring-2 focus:ring-[#B08D57]/40"
                   />
                 </Field>
                 <div className="md:col-span-2 flex items-end">
                   <button
                     onClick={descargar}
                     disabled={loading}
-                    className="w-full px-5 py-3 rounded-2xl font-extrabold shadow border border-[var(--accent)]/40
-                               bg-[var(--accent)] hover:bg-[var(--accentHover)] text-black disabled:opacity-60"
+                    className="w-full px-5 py-3 rounded-2xl bg-[#2F6B4F] hover:bg-[#25583F] text-white font-semibold shadow disabled:opacity-60"
                   >
                     {loading ? "Generando..." : "⬇️ Descargar Excel"}
                   </button>
@@ -166,9 +159,7 @@ export default function Reportes() {
                   <input
                     value={anio}
                     onChange={(e) => setAnio(e.target.value)}
-                    className="w-full px-4 py-3 rounded-2xl border border-white/10 bg-white/10
-                               text-[var(--textDark)] outline-none
-                               focus:ring-2 focus:ring-[var(--accent)]/40"
+                    className="w-full px-4 py-3 rounded-2xl border border-black/10 bg-white/80 outline-none focus:ring-2 focus:ring-[#B08D57]/40"
                     placeholder="2026"
                   />
                 </Field>
@@ -177,14 +168,12 @@ export default function Reportes() {
                   <select
                     value={mes}
                     onChange={(e) => setMes(e.target.value)}
-                    className="w-full px-4 py-3 rounded-2xl border border-white/10 bg-white/10
-                               text-[var(--textDark)] outline-none
-                               focus:ring-2 focus:ring-[var(--accent)]/40"
+                    className="w-full px-4 py-3 rounded-2xl border border-black/10 bg-white/80 outline-none focus:ring-2 focus:ring-[#B08D57]/40"
                   >
                     {Array.from({ length: 12 }).map((_, i) => {
                       const mm = String(i + 1).padStart(2, "0");
                       return (
-                        <option key={mm} value={mm} className="bg-[#0f0f10]">
+                        <option key={mm} value={mm}>
                           {mm}
                         </option>
                       );
@@ -196,8 +185,7 @@ export default function Reportes() {
                   <button
                     onClick={descargar}
                     disabled={loading}
-                    className="w-full px-5 py-3 rounded-2xl font-extrabold shadow border border-[var(--accent)]/40
-                               bg-[var(--accent)] hover:bg-[var(--accentHover)] text-black disabled:opacity-60"
+                    className="w-full px-5 py-3 rounded-2xl bg-[#2F6B4F] hover:bg-[#25583F] text-white font-semibold shadow disabled:opacity-60"
                   >
                     {loading ? "Generando..." : "⬇️ Descargar Excel"}
                   </button>
@@ -211,9 +199,7 @@ export default function Reportes() {
                   <input
                     value={anio}
                     onChange={(e) => setAnio(e.target.value)}
-                    className="w-full px-4 py-3 rounded-2xl border border-white/10 bg-white/10
-                               text-[var(--textDark)] outline-none
-                               focus:ring-2 focus:ring-[var(--accent)]/40"
+                    className="w-full px-4 py-3 rounded-2xl border border-black/10 bg-white/80 outline-none focus:ring-2 focus:ring-[#B08D57]/40"
                     placeholder="2026"
                   />
                 </Field>
@@ -222,12 +208,10 @@ export default function Reportes() {
                   <select
                     value={semestre}
                     onChange={(e) => setSemestre(e.target.value)}
-                    className="w-full px-4 py-3 rounded-2xl border border-white/10 bg-white/10
-                               text-[var(--textDark)] outline-none
-                               focus:ring-2 focus:ring-[var(--accent)]/40"
+                    className="w-full px-4 py-3 rounded-2xl border border-black/10 bg-white/80 outline-none focus:ring-2 focus:ring-[#B08D57]/40"
                   >
-                    <option value="1" className="bg-[#0f0f10]">Semestre 1 (Ene–Jun)</option>
-                    <option value="2" className="bg-[#0f0f10]">Semestre 2 (Jul–Dic)</option>
+                    <option value="1">Semestre 1 (Ene–Jun)</option>
+                    <option value="2">Semestre 2 (Jul–Dic)</option>
                   </select>
                 </Field>
 
@@ -235,8 +219,7 @@ export default function Reportes() {
                   <button
                     onClick={descargar}
                     disabled={loading}
-                    className="w-full px-5 py-3 rounded-2xl font-extrabold shadow border border-[var(--accent)]/40
-                               bg-[var(--accent)] hover:bg-[var(--accentHover)] text-black disabled:opacity-60"
+                    className="w-full px-5 py-3 rounded-2xl bg-[#2F6B4F] hover:bg-[#25583F] text-white font-semibold shadow disabled:opacity-60"
                   >
                     {loading ? "Generando..." : "⬇️ Descargar Excel"}
                   </button>
@@ -245,18 +228,18 @@ export default function Reportes() {
             )}
           </div>
 
-          <div className="mt-6 rounded-3xl bg-white/10 border border-white/10 p-5">
-            <h3 className="font-extrabold text-[var(--textDark)]">📌 Nota</h3>
-            <p className="mt-2 text-sm text-[var(--muted)]">
+          <div className="mt-6 rounded-3xl bg-white/80 border border-black/5 p-5">
+            <h3 className="font-extrabold">📌 Nota</h3>
+            <p className="mt-2 text-sm text-[#6B5B52]">
               Reportes funcionan incluso si la jornada está cerrada (ideal para el dueño).
             </p>
           </div>
         </div>
 
         {/* RESUMEN */}
-        <div className="card-theme rounded-3xl shadow-xl p-5 sm:p-6">
-          <h2 className="text-xl font-extrabold text-[var(--textDark)]">📈 Resumen</h2>
-          <p className="text-sm text-[var(--muted)] mt-1">
+        <div className="rounded-3xl bg-white/70 backdrop-blur border border-black/5 shadow-sm p-6">
+          <h2 className="text-xl font-extrabold">📈 Resumen</h2>
+          <p className="text-sm text-[#6B5B52] mt-1">
             Luego aquí metemos KPIs: total vendido, # pagos, top platos.
           </p>
 
@@ -272,12 +255,12 @@ export default function Reportes() {
             <MiniStat label="Formato" value="Excel (.xlsx)" />
           </div>
 
-          <div className="mt-6 h-px bg-white/10" />
+          <div className="mt-6 h-px bg-black/5" />
 
+          {/* ✅ Botón correcto */}
           <button
             onClick={() => navigate("/")}
-            className="mt-5 w-full px-5 py-3 rounded-2xl font-extrabold shadow
-                       bg-white/10 hover:bg-white/15 border border-white/10 text-[var(--textDark)]"
+            className="mt-5 w-full px-5 py-3 rounded-2xl bg-black/5 hover:bg-black/10 text-[#2B1B12] font-semibold"
           >
             🏠 Volver a Bienvenida
           </button>
@@ -292,10 +275,10 @@ function Tab({ label, active, onClick }) {
     <button
       onClick={onClick}
       className={[
-        "px-4 py-2 rounded-2xl font-extrabold border transition",
+        "px-4 py-2 rounded-2xl font-semibold border transition",
         active
-          ? "bg-[var(--primary)] hover:bg-[var(--primaryHover)] text-white border-white/10"
-          : "bg-white/10 border-white/10 text-[var(--textDark)] hover:bg-white/15",
+          ? "bg-[#B08D57]/15 border-[#B08D57]/30 text-[#2B1B12]"
+          : "bg-white/70 border-black/10 text-[#6B5B52] hover:bg-white",
       ].join(" ")}
     >
       {label}
@@ -306,7 +289,7 @@ function Tab({ label, active, onClick }) {
 function Field({ label, children }) {
   return (
     <div>
-      <div className="text-sm font-extrabold mb-2 text-[var(--textDark)]">{label}</div>
+      <div className="text-sm font-semibold mb-2">{label}</div>
       {children}
     </div>
   );
@@ -314,9 +297,9 @@ function Field({ label, children }) {
 
 function MiniStat({ label, value }) {
   return (
-    <div className="px-4 py-3 rounded-2xl bg-[var(--accent)]/15 border border-[var(--accent)]/35">
-      <div className="text-xs text-[var(--muted)]">{label}</div>
-      <div className="text-lg font-extrabold text-[var(--textDark)]">{value}</div>
+    <div className="px-4 py-3 rounded-2xl bg-[#B08D57]/10 border border-[#B08D57]/20">
+      <div className="text-xs text-[#6B5B52]">{label}</div>
+      <div className="text-lg font-extrabold">{value}</div>
     </div>
   );
 }
