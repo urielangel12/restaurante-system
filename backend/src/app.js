@@ -6,55 +6,42 @@ const cors = require("cors");
 
 const app = express();
 
-// ✅ lista de orígenes permitidos (local + prod)
-const allowedOrigins = [
-  "http://localhost:5173",
-  process.env.FRONTEND_URL, // ej: https://restaurante-system.vercel.app
-].filter(Boolean);
+// 👇 FORZAMOS origin permitido manualmente
+app.use((req, res, next) => {
+  const allowedOrigin = process.env.FRONTEND_URL;
 
-// ✅ función cors segura
-const corsOptions = {
-  origin: (origin, cb) => {
-    // requests sin origin (curl/postman)
-    if (!origin) return cb(null, true);
+  if (allowedOrigin) {
+    res.setHeader("Access-Control-Allow-Origin", allowedOrigin);
+  }
 
-    // permitir si coincide exacto
-    if (allowedOrigins.includes(origin)) return cb(null, true);
+  res.setHeader("Access-Control-Allow-Methods", "GET,POST,PUT,PATCH,DELETE,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type,Authorization");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
 
-    // bloquear si no
-    return cb(null, false);
-  },
-  credentials: true,
-};
+  if (req.method === "OPTIONS") {
+    return res.sendStatus(200);
+  }
 
-// ✅ IMPORTANTE: CORS primero
-app.use(cors(corsOptions));
-
-// ✅ IMPORTANTE: preflight para TODOS
-app.options("*", cors(corsOptions));
+  next();
+});
 
 app.use(express.json());
 
-// ✅ health
+// health
 app.get("/", (req, res) => {
-  res.json({ ok: true, msg: "Backend corriendo ✅" });
+  res.json({ ok: true });
 });
 
-// routes
-app.use("/api/reportes", require("./routes/reporteSemestral"));
-app.use("/api/reportes", require("./routes/reporteMensual"));
-app.use("/api/reportes", require("./routes/reporteDiario"));
+// rutas
 app.use("/api/jornada", require("./routes/jornada"));
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/caja", require("./routes/caja"));
 app.use("/api/pedidos", require("./routes/pedidos"));
 app.use("/api/platos", require("./routes/platos"));
 app.use("/api/mesas", require("./routes/mesas"));
-
-// ✅ 404 JSON
-app.use((req, res) => {
-  res.status(404).json({ error: "Not found" });
-});
+app.use("/api/reportes", require("./routes/reporteSemestral"));
+app.use("/api/reportes", require("./routes/reporteMensual"));
+app.use("/api/reportes", require("./routes/reporteDiario"));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log("Listening on", PORT));
