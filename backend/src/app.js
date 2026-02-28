@@ -7,7 +7,7 @@ const cors = require("cors");
 const app = express();
 app.use(express.json());
 
-// ✅ Permite varios origins (separados por coma)
+// ✅ lee origins desde Render
 const allowedOrigins = [
   "http://localhost:5173",
   ...(process.env.FRONTEND_URLS ? process.env.FRONTEND_URLS.split(",") : []),
@@ -15,52 +15,36 @@ const allowedOrigins = [
 
 const corsOptions = {
   origin: (origin, cb) => {
-    if (!origin) return cb(null, true); // Postman / server-to-server
+    // requests sin origin (postman / curl)
+    if (!origin) return cb(null, true);
+
     if (allowedOrigins.includes(origin)) return cb(null, true);
-    return cb(null, false); // 👈 NO error (evita 500)
+
+    // 👇 IMPORTANTE: no tires error (así no da 500)
+    return cb(null, false);
   },
   credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
-// ✅ CORS + Preflight para Express 5 (regex, no "*" ni "/*")
 app.use(cors(corsOptions));
-app.options(/.*/, cors(corsOptions));
+app.options(/.*/, cors(corsOptions)); // ✅ Express 5 safe
 
-// Ruta raíz
 app.get("/", (req, res) => {
   res.json({ ok: true, msg: "Backend Restaurante System corriendo ✅" });
 });
 
 // Routes
-const pedidosRoutes = require("./routes/pedidos");
-const platosRoutes = require("./routes/platos");
-const mesasRoutes = require("./routes/mesas");
-const cajaRoutes = require("./routes/caja");
-const authRoutes = require("./routes/auth");
-const jornadaRoutes = require("./routes/jornada");
-const reporteDiario = require("./routes/reporteDiario");
-const reporteMensual = require("./routes/reporteMensual");
-const reporteSemestral = require("./routes/reporteSemestral");
-
-app.use("/api/reportes", reporteSemestral);
-app.use("/api/reportes", reporteMensual);
-app.use("/api/reportes", reporteDiario);
-
-app.use("/api/jornada", jornadaRoutes);
-app.use("/api/auth", authRoutes);
-app.use("/api/caja", cajaRoutes);
-
-app.use("/api/pedidos", pedidosRoutes);
-app.use("/api/platos", platosRoutes);
-app.use("/api/mesas", mesasRoutes);
-
-// ✅ Handler si CORS bloquea (opcional pero útil)
-app.use((err, req, res, next) => {
-  if (err && String(err).toLowerCase().includes("cors")) {
-    return res.status(403).json({ error: "CORS blocked" });
-  }
-  next(err);
-});
+app.use("/api/jornada", require("./routes/jornada"));
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/caja", require("./routes/caja"));
+app.use("/api/pedidos", require("./routes/pedidos"));
+app.use("/api/platos", require("./routes/platos"));
+app.use("/api/mesas", require("./routes/mesas"));
+app.use("/api/reportes", require("./routes/reporteSemestral"));
+app.use("/api/reportes", require("./routes/reporteMensual"));
+app.use("/api/reportes", require("./routes/reporteDiario"));
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
+app.listen(PORT, () => console.log("Server on port " + PORT));
