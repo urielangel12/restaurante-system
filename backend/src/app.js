@@ -5,42 +5,28 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
+app.use(express.json());
 
-/**
- * ✅ CORS (Express 5 friendly + Vercel + local)
- * IMPORTANTE:
- * - En Render debes setear FRONTEND_URL = https://TU-PROYECTO.vercel.app
- * - Si tienes más de 1 frontend, puedes separarlos por coma.
- */
+// ✅ Permite varios origins (separados por coma)
 const allowedOrigins = [
   "http://localhost:5173",
-  ...(process.env.FRONTEND_URL ? process.env.FRONTEND_URL.split(",") : []),
+  ...(process.env.FRONTEND_URLS ? process.env.FRONTEND_URLS.split(",") : []),
 ].map(s => s.trim()).filter(Boolean);
 
 const corsOptions = {
   origin: (origin, cb) => {
-    // requests sin origin: server-to-server, curl, postman
-    if (!origin) return cb(null, true);
-
-    // permitir si está en lista
+    if (!origin) return cb(null, true); // Postman / server-to-server
     if (allowedOrigins.includes(origin)) return cb(null, true);
-
-    // bloquear si no coincide
-    return cb(null, false);
+    return cb(null, false); // 👈 NO error (evita 500)
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
+// ✅ CORS + Preflight para Express 5 (regex, no "*" ni "/*")
 app.use(cors(corsOptions));
-
-// ✅ preflight global (Express 5: usar regex, NO "*" ni "/*")
 app.options(/.*/, cors(corsOptions));
 
-app.use(express.json());
-
-// ✅ healthcheck / root
+// Ruta raíz
 app.get("/", (req, res) => {
   res.json({ ok: true, msg: "Backend Restaurante System corriendo ✅" });
 });
@@ -68,13 +54,12 @@ app.use("/api/pedidos", pedidosRoutes);
 app.use("/api/platos", platosRoutes);
 app.use("/api/mesas", mesasRoutes);
 
-/**
- * ✅ Handler de error CORS / general
- * Para que el browser no vea 500 sin explicación.
- */
+// ✅ Handler si CORS bloquea (opcional pero útil)
 app.use((err, req, res, next) => {
-  console.error("ERROR:", err);
-  res.status(500).json({ error: "Error interno", detalle: err.message });
+  if (err && String(err).toLowerCase().includes("cors")) {
+    return res.status(403).json({ error: "CORS blocked" });
+  }
+  next(err);
 });
 
 const PORT = process.env.PORT || 3000;
